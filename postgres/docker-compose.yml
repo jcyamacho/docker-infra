@@ -1,26 +1,29 @@
-version: '3'
-
 services:
   postgres:
     image: postgres:latest
     container_name: postgres
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     volumes:
-      - postgres-db:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
-      - postgres-network
+      - postgres
 
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
     depends_on:
       - postgres
-    restart: always
+    restart: unless-stopped
     ports:
       - 8054:80
     environment:
@@ -28,13 +31,17 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
       PGADMIN_DISABLE_POSTFIX: 1
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin
     networks:
-      - postgres-network
+      - postgres
 
 volumes:
-  postgres-db:
-  pgadmin-data:
+  postgres:
+    name: postgres-db
+  pgadmin:
+    name: pgadmin-data
 
 networks:
-  postgres-network:
+  postgres:
+    name: postgres
+    driver: bridge

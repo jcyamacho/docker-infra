@@ -1,30 +1,38 @@
-version: '3'
-
 services:
   redis:
-    image: redis:latest
+    image: redis:alpine
     container_name: redis
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
     ports:
       - 6379:6379
     volumes:
-      - redis-data:/data
+      - data:/data
     networks:
-      - redis-network
+      - redis
 
   redis-commander:
     image: rediscommander/redis-commander:latest
-    container_name: redis-commander
+    container_name: commander
     restart: always
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
-      - 8055:8081
+      - 8081:8081
     networks:
-      - redis-network
+      - redis
+    depends_on:
+      - redis
 
 volumes:
-  redis-data:
+  data:
+    name: redis-data
 
 networks:
-  redis-network:
+  redis:
+    name: redis
+    driver: bridge

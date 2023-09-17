@@ -14,4 +14,4 @@ postgres docker image with pgadmin4
 
 |  username  | password |
 |------------|----------|
-| `postgres` | `root`   |
+| `user` | `password`   |
