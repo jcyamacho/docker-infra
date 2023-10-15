@@ -1,0 +1,28 @@
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    expose:
+      - 3000
+      - 80
+      - 53
+    ports:
+      - 3101:3000
+      - 3100:80
+      - 53:53/tcp
+      - 53:53/udp
+    volumes:
+      - work:/opt/adguardhome/work
+      - conf:/opt/adguardhome/conf
+    restart: unless-stopped
+    networks:
+      - adguard
+
+networks:
+  adguard:
+    name: adguard
+    driver: bridge
+
+volumes:
+  work:
+  conf:
