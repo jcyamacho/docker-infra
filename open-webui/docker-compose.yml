@@ -1,0 +1,21 @@
+services:
+  # require local ollama service
+  # for a full setup, see: https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    pull_policy: always
+    volumes:
+      - open-webui:/app/backend/data
+    ports:
+      - ${OPEN_WEBUI_PORT-5005}:8080
+    environment:
+      - 'WEBUI_AUTH=${WEBUI_AUTH-False}'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: always
+
+volumes:
+  open-webui:
+    name: open-webui-data
