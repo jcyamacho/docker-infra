@@ -2,6 +2,7 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
+    pull_policy: always
     volumes:
       - portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock

@@ -2,6 +2,7 @@ services:
   adguard:
     image: adguard/adguardhome
     container_name: adguardhome
+    pull_policy: always
     expose:
       - 3000
       - 80

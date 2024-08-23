@@ -2,6 +2,7 @@ services:
   mysql:
     image: mysql:latest
     container_name: mysql
+    pull_policy: always
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -17,6 +18,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
+    pull_policy: always
     depends_on:
       - mysql
     restart: unless-stopped

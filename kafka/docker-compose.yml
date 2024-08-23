@@ -1,6 +1,7 @@
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    pull_policy: always
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -10,6 +11,7 @@ services:
 
   broker:
     image: confluentinc/cp-kafka:latest
+    pull_policy: always
     container_name: broker
     ports:
       - 9092:9092
@@ -28,6 +30,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
+    pull_policy: always
     container_name: kafka-ui
     ports:
       - 8051:8080

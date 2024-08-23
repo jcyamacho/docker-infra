@@ -3,6 +3,7 @@ services:
     image: mongo:latest
     container_name: mongo
     restart: unless-stopped
+    pull_policy: always
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
       interval: 10s

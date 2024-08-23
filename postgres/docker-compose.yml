@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:latest
+    pull_policy: always
     container_name: postgres
     restart: unless-stopped
     healthcheck:
@@ -20,6 +21,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
+    pull_policy: always
     container_name: pgadmin
     depends_on:
       - postgres

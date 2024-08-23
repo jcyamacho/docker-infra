@@ -3,5 +3,5 @@ DIRS := $(patsubst %/,%,$(DIRS))
 
 .PHONY: $(DIRS)
 $(DIRS):
-	@echo "Running docker-compose up -d in $@"
-	@cd $@ && docker-compose up -d
+	@echo "running $@"
+	@cd $@ && docker-compose up -d --build
