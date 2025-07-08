@@ -31,7 +31,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: user@email.com
       PGADMIN_DEFAULT_PASSWORD: password
-      PGADMIN_DISABLE_POSTFIX: 1
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
     volumes:
       - pgadmin:/var/lib/pgadmin
     networks:
