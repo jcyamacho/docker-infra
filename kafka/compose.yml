@@ -14,7 +14,7 @@ services:
     pull_policy: always
     container_name: broker
     ports:
-      - 9092:9092
+      - ${KAFKA_PORT:-9092}:9092
     depends_on:
       - zookeeper
     environment:
@@ -33,7 +33,7 @@ services:
     pull_policy: always
     container_name: kafka-ui
     ports:
-      - 8051:8080
+      - ${KAFKA_UI_PORT:-8080}:8080
     depends_on:
       - zookeeper
       - broker

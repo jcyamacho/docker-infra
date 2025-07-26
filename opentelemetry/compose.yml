@@ -1,0 +1,10 @@
+# username: admin
+# password: admin
+# https://github.com/grafana/docker-otel-lgtm
+services:
+  otel:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - ${GRAFANA_PORT:-3000}:3000
+      - 4317:4317 # OTLP/GRPC
+      - 4318:4318 # OTLP/HTTP

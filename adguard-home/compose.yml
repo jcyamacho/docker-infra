@@ -1,6 +1,7 @@
 services:
+  # https://github.com/AdguardTeam/AdGuardHome
   adguard:
-    image: adguard/adguardhome
+    image: adguard/adguardhome:latest
     container_name: adguardhome
     pull_policy: always
     expose:
@@ -8,8 +9,8 @@ services:
       - 80
       - 53
     ports:
-      - 3101:3000
-      - 3100:80
+      - ${ADGUARD_CONFIG_PORT:-5001}:3000 # Config UI, Use this port to configure AdGuard Home
+      - ${ADGUARD_PORT:-5000}:80 # AdGuard Admin UI
       - 53:53/tcp
       - 53:53/udp
     volumes:

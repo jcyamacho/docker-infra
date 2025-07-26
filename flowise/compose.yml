@@ -1,0 +1,11 @@
+services:
+  # https://flowiseai.com/
+  flowise:
+    image: flowiseai/flowise:latest
+    ports:
+      - ${FLOWISE_PORT:-3000}:3000
+    volumes:
+      - flowise-db:/root/.flowise
+
+volumes:
+  flowise-db:
