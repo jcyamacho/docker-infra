@@ -26,7 +26,7 @@ Self-hosted ChatGPT-style web interface for LLMs with advanced AI features.
 
 | Variable | Default | Description |
 |----|---|----|
-| `WEBUI_DOCKER_TAG` | `main` | Docker image tag |
+| `OPEN_WEBUI_VERSION` | `main` | Docker image tag |
 | `OPEN_WEBUI_PORT` | `8080` | Web interface port |
 | `WEBUI_AUTH` | `False` | Enable authentication |
 
@@ -40,7 +40,7 @@ docker compose up -d
 WEBUI_AUTH=True docker compose up -d
 
 # Custom port and version
-WEBUI_DOCKER_TAG=v0.3.0 OPEN_WEBUI_PORT=3000 docker compose up -d
+OPEN_WEBUI_VERSION=v0.3.0 OPEN_WEBUI_PORT=3000 docker compose up -d
 ```
 
 **Note:** Authentication disabled = all users have admin privileges. Enable for multi-user environments.

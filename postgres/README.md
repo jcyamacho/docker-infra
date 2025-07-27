@@ -26,6 +26,7 @@ PostgreSQL database server with pgAdmin web interface for database administratio
 
 | Variable | Default | Description |
 |----|---|----|
+| `POSTGRES_VERSION` | `latest` | PostgreSQL Docker image tag |
 | `POSTGRES_USER` | `postgres` | PostgreSQL database username |
 | `POSTGRES_PASSWORD` | `postgres` | PostgreSQL database password |
 | `PGADMIN_PORT` | `5000` | Port for pgAdmin web interface |
@@ -43,6 +44,9 @@ POSTGRES_USER=myapp POSTGRES_PASSWORD=secret docker compose up -d
 
 # Custom pgAdmin port and credentials
 PGADMIN_PORT=8080 PGADMIN_DEFAULT_EMAIL=admin@example.com PGADMIN_DEFAULT_PASSWORD=admin123 docker compose up -d
+
+# Specific PostgreSQL version
+POSTGRES_VERSION=15 docker compose up -d
 ```
 
 **Note:** Change default passwords for production environments.

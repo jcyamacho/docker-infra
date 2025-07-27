@@ -4,16 +4,12 @@ Flowise is an open-source low-code tool for building customized LLM orchestratio
 
 ## What it does
 
-- **Visual workflow builder** - Create AI applications using an intuitive drag-and-drop interface
-- **LLM orchestration** - Connect and chain multiple AI models from different providers
-- **AI agents** - Build autonomous agents that can perform complex multi-step tasks
-- **Chatflows** - Create conversational AI applications and chatbots
-- **Custom tools integration** - Connect external APIs and services to your workflows
-- **Memory management** - Implement conversation memory and context retention
-- **Document processing** - Upload and process documents for AI-powered Q&A
-- **Multi-modal support** - Handle text, images, and other data types in workflows
-- **API endpoints** - Deploy your flows as REST APIs for integration
-- **Template library** - Access pre-built templates for common use cases
+- **Visual AI Workflows** - Create and chain AI applications using drag-and-drop interface
+- **Multi-LLM Integration** - Connect OpenAI, Azure, Anthropic, and other AI providers
+- **AI Agents & Chatbots** - Build autonomous agents and conversational applications
+- **Document Intelligence** - Process files for AI-powered Q&A and knowledge extraction
+- **API & Integration Ready** - Deploy workflows as REST APIs with external tool connections
+- **Template Library** - Pre-built workflows for common AI use cases and scenarios
 
 ## Quick Start
 
@@ -29,6 +25,7 @@ Flowise is an open-source low-code tool for building customized LLM orchestratio
 
 | Variable | Default | Description |
 |----|---|----|
+| `FLOWISE_VERSION` | `latest` | Docker image tag |
 | `FLOWISE_PORT` | `3000` | Port for the web interface |
 
 ### Usage Examples
@@ -40,6 +37,8 @@ docker compose up -d
 # Run on custom port
 FLOWISE_PORT=8080 docker compose up -d
 
+# Specific version
+FLOWISE_VERSION=1.6.5 docker compose up -d
 ```
 
 **Note:** All workflows, configurations, and data are stored in the `flowise-db` volume for persistence across container restarts.

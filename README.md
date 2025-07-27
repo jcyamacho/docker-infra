@@ -2,7 +2,7 @@
 
 A configuration library of predefined Docker Compose setups for commonly used services and tools. Deploy any service with a single command instead of recreating configurations from scratch.
 
-## 🚀 Usage
+## 🚀 Quick Start
 
 Launch any service:
 
@@ -22,7 +22,28 @@ make adguard-home # Start AdGuard Home DNS blocker
 make postgres redis kafka
 ```
 
-### Managing Services
+## 📦 Available Services
+
+### Databases
+
+- **postgres** - PostgreSQL with pgAdmin
+- **mysql** - MySQL with phpMyAdmin
+- **mongo** - MongoDB with Mongo Express
+- **redis** - Redis with Redis Commander
+
+### AI/ML Platforms
+
+- **flowise** - Low-code AI workflow builder
+- **open-webui** - ChatGPT-style web interface for LLMs
+
+### Infrastructure & Monitoring
+
+- **kafka** - Distributed streaming platform with UI
+- **opentelemetry** - Complete observability stack
+- **portainer** - Docker container management
+- **adguard-home** - Network-wide DNS filtering
+
+## 🛠️ Managing Services
 
 ```bash
 # Stop a service
@@ -42,36 +63,34 @@ make status
 
 # Get help and see all available services
 make help
+```
 
+### Environment Customization
+
+```bash
 # Customize with environment variables
 FLOWISE_PORT=8080 make flowise
 POSTGRES_PASSWORD=mypassword make postgres
+PGADMIN_PORT=8080 make postgres
 ```
 
-## 📦 Available Services
-
-**Databases:** postgres, mysql, mongo, redis
-**AI/ML:** flowise, open-webui
-**Security:** adguard-home, portainer
-**Infrastructure:** kafka, opentelemetry
-
-## 📁 Structure
+## 📁 Project Structure
 
 ```md
 docker-infra/
-├── Makefile              # Automation helper
+├── Makefile              # Automation and service discovery
 ├── <service-name>/       # Each service in its own directory
-│   ├── compose.yml
-│   └── README.md         # Service-specific docs
+│   ├── compose.yml       # Docker Compose configuration
+│   └── README.md         # Service-specific documentation
 └── ...
 ```
 
 Each service is self-contained with its own configuration and documentation.
 
-## ➕ Adding Services
+## ➕ Adding New Services
 
 1. Create directory: `mkdir new-service`
 2. Add `compose.yml` and `README.md`
 3. Test: `make new-service`
 
-The Makefile automatically detects new services.
+The Makefile automatically detects new services - no configuration needed.
