@@ -1,8 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
-    pull_policy: always
-    container_name: postgres
+    image: postgres:${POSTGRES_VERSION:-latest}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready"]
@@ -21,10 +19,9 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    pull_policy: always
-    container_name: pgadmin
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     ports:
       - ${PGADMIN_PORT:-5000}:80
@@ -40,9 +37,7 @@ services:
 
 volumes:
   postgres:
-    name: postgres-db
   pgadmin:
-    name: pgadmin-data
 
 networks:
   postgres:

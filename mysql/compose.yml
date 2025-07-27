@@ -1,41 +1,43 @@
 services:
   mysql:
-    image: mysql:latest
-    container_name: mysql
-    pull_policy: always
+    image: mysql:${MYSQL_VERSION:-latest}
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
-    networks:
-      - mysql
     ports:
       - 3306:3306
     volumes:
       - mysql:/var/lib/mysql
+    networks:
+      - mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   phpmyadmin:
     # image: phpmyadmin/phpmyadmin:latest
     image: arm64v8/phpmyadmin:latest # for mac m-chip
-    container_name: phpmyadmin
-    pull_policy: always
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
     ports:
-      - ${PHPMYADMIN_PORT-5000}:80
+      - ${PHPMYADMIN_PORT:-5000}:80
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
     networks:
       - mysql
 
+volumes:
+  mysql:
+
 networks:
   mysql:
     name: mysql
     driver: bridge
-
-volumes:
-  mysql:
-    name: mysql-db

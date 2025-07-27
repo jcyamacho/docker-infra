@@ -1,11 +1,16 @@
 services:
-  # https://flowiseai.com/
   flowise:
-    image: flowiseai/flowise:latest
+    image: flowiseai/flowise:${FLOWISE_VERSION:-latest}
     ports:
       - ${FLOWISE_PORT:-3000}:3000
     volumes:
-      - flowise-db:/root/.flowise
+      - flowise:/root/.flowise
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
-  flowise-db:
+  flowise:

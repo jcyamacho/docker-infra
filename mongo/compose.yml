@@ -1,38 +1,37 @@
 services:
   mongo:
-    image: mongo:latest
-    container_name: mongo
+    image: mongo:${MONGO_VERSION:-latest}
     restart: unless-stopped
-    pull_policy: always
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok", "localhost:27017/test", "--quiet"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 40s
     ports:
       - 27017:27017
-    networks:
-      - mongo
     volumes:
       - mongo:/data/db
+    networks:
+      - mongo
 
   mongo-express:
     image: mongo-express:latest
-    container_name: mongo-express
     restart: unless-stopped
     ports:
       - ${MONGO_EXPRESS_PORT:-8081}:8081
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
+    depends_on:
+      mongo:
+        condition: service_healthy
     networks:
       - mongo
+
+volumes:
+  mongo:
 
 networks:
   mongo:
     name: mongo
     driver: bridge
-
-volumes:
-  mongo:
-    name: mongo-db

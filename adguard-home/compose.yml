@@ -1,29 +1,20 @@
 services:
-  # https://github.com/AdguardTeam/AdGuardHome
   adguard:
-    image: adguard/adguardhome:latest
-    container_name: adguardhome
-    pull_policy: always
-    expose:
-      - 3000
-      - 80
-      - 53
+    image: adguard/adguardhome:${ADGUARD_VERSION:-latest}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     ports:
-      - ${ADGUARD_CONFIG_PORT:-5001}:3000 # Config UI, Use this port to configure AdGuard Home
-      - ${ADGUARD_PORT:-5000}:80 # AdGuard Admin UI
-      - 53:53/tcp
-      - 53:53/udp
+      - ${ADGUARD_CONFIG_PORT:-5001}:3000 # Config UI
+      - ${ADGUARD_PORT:-5000}:80          # Admin UI
+      - 53:53/tcp                         # DNS
+      - 53:53/udp                         # DNS
     volumes:
       - work:/opt/adguardhome/work
       - conf:/opt/adguardhome/conf
     restart: unless-stopped
-    networks:
-      - adguard
-
-networks:
-  adguard:
-    name: adguard
-    driver: bridge
 
 volumes:
   work:

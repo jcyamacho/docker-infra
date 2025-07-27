@@ -1,8 +1,6 @@
 services:
   redis:
-    image: redis:alpine
-    container_name: redis
-    pull_policy: always
+    image: redis:${REDIS_VERSION:-latest}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -12,27 +10,25 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - data:/data
+      - redis:/data
     networks:
       - redis
 
   redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: commander
-    pull_policy: always
-    restart: always
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: unless-stopped
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
       - ${REDIS_COMMANDER_PORT:-8081}:8081
-    networks:
-      - redis
     depends_on:
+      redis:
+        condition: service_healthy
+    networks:
       - redis
 
 volumes:
-  data:
-    name: redis-data
+  redis:
 
 networks:
   redis:

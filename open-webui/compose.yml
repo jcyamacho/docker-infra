@@ -3,9 +3,7 @@ services:
   # for a full setup, see: https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG:-main}
-    container_name: open-webui
-    pull_policy: always
+    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
     volumes:
       - open-webui:/app/backend/data
     ports:
@@ -14,8 +12,12 @@ services:
       WEBUI_AUTH: ${WEBUI_AUTH:-False}
     extra_hosts:
       - host.docker.internal:host-gateway
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   open-webui:
-    name: open-webui-data
