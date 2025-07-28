@@ -1,96 +1,84 @@
 # Docker Infrastructure
 
-A configuration library of predefined Docker Compose setups for commonly used services and tools. Deploy any service with a single command instead of recreating configurations from scratch.
+A curated collection of Docker Compose configurations for common development services. Start any service instantly without dealing with configuration files.
 
 ## 🚀 Quick Start
 
-Launch any service:
-
 ```bash
-make <service-name>
-```
-
-Examples:
-
-```bash
-make postgres    # Start PostgreSQL database
-make redis       # Start Redis cache
-make flowise     # Start Flowise AI workflow builder
-make adguard-home # Start AdGuard Home DNS blocker
+# Start any service
+make postgres
+make redis
+make flowise
 
 # Start multiple services
 make postgres redis kafka
-```
 
-## 📦 Available Services
-
-### Databases
-
-- **postgres** - PostgreSQL with pgAdmin
-- **mysql** - MySQL with phpMyAdmin
-- **mongo** - MongoDB with Mongo Express
-- **redis** - Redis with Redis Commander
-
-### AI/ML Platforms
-
-- **flowise** - Low-code AI workflow builder
-- **open-webui** - ChatGPT-style web interface for LLMs
-
-### Infrastructure & Monitoring
-
-- **kafka** - Distributed streaming platform with UI
-- **opentelemetry** - Complete observability stack
-- **portainer** - Docker container management
-- **adguard-home** - Network-wide DNS filtering
-
-## 🛠️ Managing Services
-
-```bash
 # Stop a service
 make stop-postgres
 
 # View logs
 make logs-postgres
 
-# Restart a service
-make restart-postgres
-
-# Stop all services
-make clean
-
-# Check running containers
-make status
-
-# Get help and see all available services
+# See all available services
 make help
 ```
 
-### Environment Customization
+## 📦 Available Services
+
+**Databases:** `postgres` `mysql` `mongo` `redis`  
+**AI/ML:** `flowise` `open-webui`  
+**Infrastructure:** `kafka` `opentelemetry` `portainer` `adguard-home`
+
+Each service includes web interfaces and is pre-configured for immediate development use.
+
+## 🎛️ Customization
+
+Override defaults with environment variables:
 
 ```bash
-# Customize with environment variables
-FLOWISE_PORT=8080 make flowise
-POSTGRES_PASSWORD=mypassword make postgres
-PGADMIN_PORT=8080 make postgres
+# PostgreSQL with custom credentials and web UI port
+POSTGRES_PASSWORD=mypass PGADMIN_PORT=8080 make postgres
+
+# MySQL with custom root password and phpMyAdmin port
+MYSQL_ROOT_PASSWORD=secret PHPMYADMIN_PORT=8080 make mysql
+
+# Flowise on custom port with specific version
+FLOWISE_PORT=8080 FLOWISE_VERSION=1.6.5 make flowise
+
+# Open WebUI with authentication enabled
+OPEN_WEBUI_AUTH=True OPEN_WEBUI_PORT=3000 make open-webui
 ```
 
-## 📁 Project Structure
+## 🛠️ Management
 
-```md
-docker-infra/
-├── Makefile              # Automation and service discovery
-├── <service-name>/       # Each service in its own directory
-│   ├── compose.yml       # Docker Compose configuration
-│   └── README.md         # Service-specific documentation
-└── ...
+```bash
+make <service>         # Start service
+make stop-<service>    # Stop service  
+make logs-<service>    # View logs
+make restart-<service> # Restart service
+make clean            # Stop all services
+make status           # Show running containers
 ```
 
-Each service is self-contained with its own configuration and documentation.
-
-## ➕ Adding New Services
+## ➕ Adding Services
 
 1. Create directory: `mkdir new-service`
 2. Add `compose.yml` and `README.md`
-3. Test: `make new-service`
+3. Run: `make new-service`
 
-The Makefile automatically detects new services - no configuration needed.
+The Makefile automatically discovers new services.
+
+## 📁 Structure
+
+```
+docker-infra/
+├── Makefile              # Service automation
+├── service-name/         # Each service in own directory
+│   ├── compose.yml       # Docker Compose config
+│   └── README.md         # Service documentation
+└── ...
+```
+
+---
+
+**Note:** This is designed for development environments. For production, review security settings and resource limits in each service's documentation.
