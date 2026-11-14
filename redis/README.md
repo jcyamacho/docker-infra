@@ -18,14 +18,13 @@ In-memory data structure store with Redis Commander web interface for cache mana
 3. Connect applications to Redis at `localhost:6379`
 4. Use Redis Commander to browse keys and manage data
 
-**Note:** Default configuration uses Redis Alpine image for minimal footprint.
-
 ## Configuration
 
 ### Environment Variables
 
 | Variable | Default | Description |
 |----|---|----|
+| `REDIS_VERSION` | `latest` | Redis Docker image tag |
 | `REDIS_COMMANDER_PORT` | `8081` | Port for Redis Commander web interface |
 
 ### Usage Examples
@@ -36,6 +35,9 @@ docker compose up -d
 
 # Custom Redis Commander port
 REDIS_COMMANDER_PORT=8080 docker compose up -d
+
+# Smaller Alpine-based image
+REDIS_VERSION=alpine docker compose up -d
 
 # Connect with redis-cli
 redis-cli -h localhost -p 6379
