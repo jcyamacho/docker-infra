@@ -16,7 +16,7 @@ PostgreSQL database server with pgAdmin web interface for database administratio
 1. Run with Docker Compose: `docker compose up -d`
 2. Access pgAdmin at `http://localhost:5000`
 3. Connect to database at `localhost:5432`
-4. Login to pgAdmin with credentials (<user@email.com> / password)
+4. pgAdmin opens without a login; register a server with host `postgres`, user `postgres`, password `postgres`
 
 **Note:** Default configuration is optimized for development environments.
 
@@ -30,8 +30,8 @@ PostgreSQL database server with pgAdmin web interface for database administratio
 | `POSTGRES_USER` | `postgres` | PostgreSQL database username |
 | `POSTGRES_PASSWORD` | `postgres` | PostgreSQL database password |
 | `PGADMIN_PORT` | `5000` | Port for pgAdmin web interface |
-| `PGADMIN_DEFAULT_EMAIL` | `user@email.com` | pgAdmin login email |
-| `PGADMIN_DEFAULT_PASSWORD` | `password` | pgAdmin login password |
+| `PGADMIN_DEFAULT_EMAIL` | `user@email.com` | Email of the pgAdmin account created on first start |
+| `PGADMIN_DEFAULT_PASSWORD` | `password` | Password of the pgAdmin account created on first start |
 
 ### Usage Examples
 
@@ -46,7 +46,7 @@ POSTGRES_USER=myapp POSTGRES_PASSWORD=secret docker compose up -d
 PGADMIN_PORT=8080 PGADMIN_DEFAULT_EMAIL=admin@example.com PGADMIN_DEFAULT_PASSWORD=admin123 docker compose up -d
 
 # Specific PostgreSQL version
-POSTGRES_VERSION=15 docker compose up -d
+POSTGRES_VERSION=18-alpine docker compose up -d
 ```
 
 **Note:** Change default passwords for production environments.
@@ -56,6 +56,7 @@ POSTGRES_VERSION=15 docker compose up -d
 - Single-instance setup (no high availability)
 - Default credentials are insecure for production
 - No automated backup configuration included
+- Images older than PostgreSQL 18 store data in `/var/lib/postgresql/data`; mount the volume there for those tags, or the data ends up in an anonymous volume
 
 ## Links & Resources
 
