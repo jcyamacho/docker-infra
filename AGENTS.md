@@ -54,15 +54,13 @@ POSTGRES_PASSWORD=mypass PGADMIN_PORT=8080 make postgres
 
 # MySQL with custom settings
 MYSQL_ROOT_PASSWORD=secret PHPMYADMIN_PORT=8080 make mysql
-
-# Flowise on custom port
-FLOWISE_PORT=8080 FLOWISE_VERSION=1.6.5 make flowise
 ```
 
 ## Available Services
 
 **Databases:** postgres, mysql, mongo, redis
-**AI/ML:** flowise, open-webui
+**AI/ML:** open-webui, hermes-agent, paperclip
+**Automation:** n8n
 **Infrastructure:** kafka, opentelemetry, portainer, adguard-home
 
 ## Docker Compose Standards

@@ -8,7 +8,6 @@ A curated collection of Docker Compose configurations for common development ser
 # Start any service
 make postgres
 make redis
-make flowise
 
 # Start multiple services
 make postgres redis kafka
@@ -26,7 +25,8 @@ make help
 ## 📦 Available Services
 
 **Databases:** `postgres` `mysql` `mongo` `redis`  
-**AI/ML:** `flowise` `open-webui`  
+**AI/ML:** `open-webui` `hermes-agent` `paperclip`  
+**Automation:** `n8n`  
 **Infrastructure:** `kafka` `opentelemetry` `portainer` `adguard-home`
 
 Each service includes web interfaces and is pre-configured for immediate development use.
@@ -41,9 +41,6 @@ POSTGRES_PASSWORD=mypass PGADMIN_PORT=8080 make postgres
 
 # MySQL with custom root password and phpMyAdmin port
 MYSQL_ROOT_PASSWORD=secret PHPMYADMIN_PORT=8080 make mysql
-
-# Flowise on custom port with specific version
-FLOWISE_PORT=8080 FLOWISE_VERSION=1.6.5 make flowise
 
 # Open WebUI with authentication enabled
 OPEN_WEBUI_AUTH=True OPEN_WEBUI_PORT=3000 make open-webui
