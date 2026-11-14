@@ -16,7 +16,7 @@ MySQL database server with phpMyAdmin web interface for database administration 
 1. Run with Docker Compose: `docker compose up -d`
 2. Access phpMyAdmin at `http://localhost:5000`
 3. Connect to MySQL server at `localhost:3306`
-4. Login with default credentials (root/root or user/password)
+4. Login with root/root, or user/password for full access to the `app` database
 
 **Note:** Default configuration is optimized for development environments.
 
@@ -26,7 +26,9 @@ MySQL database server with phpMyAdmin web interface for database administration 
 
 | Variable | Default | Description |
 |----|---|----|
+| `MYSQL_VERSION` | `latest` | MySQL Docker image tag |
 | `MYSQL_ROOT_PASSWORD` | `root` | Password for the MySQL root user |
+| `MYSQL_DATABASE` | `app` | Database created on first start, owned by `MYSQL_USER` |
 | `MYSQL_USER` | `user` | Name for additional MySQL user account |
 | `MYSQL_PASSWORD` | `password` | Password for the additional MySQL user |
 | `PHPMYADMIN_PORT` | `5000` | Port for phpMyAdmin web interface |
@@ -42,6 +44,9 @@ MYSQL_ROOT_PASSWORD=secretroot MYSQL_USER=myapp MYSQL_PASSWORD=myapppass docker 
 
 # Custom phpMyAdmin port
 PHPMYADMIN_PORT=8080 docker compose up -d
+
+# Specific MySQL version
+MYSQL_VERSION=8.4 docker compose up -d
 ```
 
 **Note:** Change default passwords for production environments.
@@ -50,7 +55,7 @@ PHPMYADMIN_PORT=8080 docker compose up -d
 
 - Single instance setup (no high availability)
 - Default credentials are insecure for production use
-- phpMyAdmin image optimized for ARM64 (Mac M-chip) architecture
+- Credential and database variables apply only on first start with an empty volume
 
 ## Links & Resources
 

@@ -4,6 +4,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-app}
       MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
     ports:
@@ -13,7 +14,8 @@ services:
     networks:
       - mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      # TCP only answers after initialization; the socket also answers during it.
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -30,6 +32,11 @@ services:
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - mysql
 
