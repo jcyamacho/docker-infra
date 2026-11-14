@@ -12,8 +12,8 @@ Network-wide DNS server that blocks ads, trackers, and malicious domains for all
 ## Quick Start
 
 1. Run with Docker Compose: `docker compose up -d`
-2. Access configuration at `http://localhost:5001`
-3. Complete initial setup wizard
+2. Open the setup wizard at `http://localhost:5001`
+3. Finish the wizard with the admin web interface on port 80, then use it at `http://localhost:5000`
 4. Configure devices to use server IP as DNS
 
 **Note:** Port 53 may conflict with systemd-resolved on Ubuntu systems
@@ -38,7 +38,7 @@ docker compose up -d
 ADGUARD_CONFIG_PORT=3000 ADGUARD_PORT=8080 docker compose up -d
 
 # Specific version
-ADGUARD_VERSION=v0.107.63 docker compose up -d
+ADGUARD_VERSION=v0.107.80 docker compose up -d
 ```
 
 **Note:** Configure your router's DHCP to use this server's IP as DNS for network-wide filtering
@@ -48,6 +48,7 @@ ADGUARD_VERSION=v0.107.63 docker compose up -d
 - Cannot block YouTube, Facebook, or Twitch ads (share domains with content)
 - Requires port 53 access (may conflict with system DNS)
 - Initial configuration must be done through web interface
+- The admin UI is published only from container port 80, so keep that port in the setup wizard
 
 ## Links & Resources
 

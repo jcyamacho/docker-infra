@@ -2,7 +2,8 @@ services:
   adguard:
     image: adguard/adguardhome:${ADGUARD_VERSION:-latest}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      # The setup wizard serves on 3000; once setup is done the admin UI serves on 80.
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/ || wget -q --spider http://127.0.0.1:80/"]
       interval: 30s
       timeout: 10s
       retries: 3
