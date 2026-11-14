@@ -15,7 +15,7 @@ Open-source control plane that runs a company of AI agents with an org chart, go
 
 1. Run with Docker Compose: `docker compose up -d`
 2. Access the web interface at `http://localhost:3100`
-3. Create an account, then choose **Claim this instance** to become the first admin
+3. Choose **Sign in / Create account**, then claim the instance to become the first admin
 4. Follow the onboarding to create your first company
 
 **Note:** Agents need an LLM provider key. Export `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GEMINI_API_KEY` before starting; the image already includes the Claude Code, Codex, Gemini CLI, and OpenCode CLIs.
