@@ -1,6 +1,6 @@
 # Kafka
 
-Distributed streaming platform for real-time data processing with Apache Kafka, Zookeeper, and web-based management interface.
+Distributed streaming platform for real-time data processing with Apache Kafka in KRaft mode and the Kafbat UI web interface.
 
 ## What it does
 
@@ -8,7 +8,7 @@ Distributed streaming platform for real-time data processing with Apache Kafka, 
 - **Publish-Subscribe Messaging** - Reliable message queuing with topic-based organization
 - **Event Sourcing** - Store and replay event sequences for event-driven applications
 - **Stream Processing** - Real-time data processing with consumer groups and load balancing
-- **Web Management UI** - Browser-based interface for managing topics and cluster health
+- **Web Management UI** - Kafbat UI for managing topics, consumer groups, and messages
 - **Integration Ready** - Compatible with numerous data integration tools and frameworks
 
 ## Quick Start
@@ -26,7 +26,7 @@ Distributed streaming platform for real-time data processing with Apache Kafka, 
 
 | Variable | Default | Description |
 |----|---|----|
-| `KAFKA_PORT` | `9092` | External port for Kafka broker client connections |
+| `KAFKA_VERSION` | `latest` | Confluent `cp-kafka` Docker image tag |
 | `KAFKA_UI_PORT` | `8080` | Port for accessing the Kafka UI web interface |
 
 ### Usage Examples
@@ -35,14 +35,14 @@ Distributed streaming platform for real-time data processing with Apache Kafka, 
 # Basic usage
 docker compose up -d
 
-# Custom port configuration
-KAFKA_PORT=9093 KAFKA_UI_PORT=8081 docker compose up -d
+# Custom Kafka UI port
+KAFKA_UI_PORT=8081 docker compose up -d
 
-# Development with custom external port
-KAFKA_PORT=29092 docker compose up -d
+# Specific Confluent Platform version
+KAFKA_VERSION=8.2.0 docker compose up -d
 ```
 
-**Note:** Includes Zookeeper coordination service for cluster management.
+**Note:** The single node runs as both broker and controller (KRaft), so no ZooKeeper is needed. Containers on the `kafka` network connect to `kafka:29092`.
 
 ## Limitations
 
@@ -57,3 +57,4 @@ KAFKA_PORT=29092 docker compose up -d
 - **Official GitHub:** <https://github.com/apache/kafka>
 - **Documentation:** <https://kafka.apache.org/documentation/>
 - **Docker Hub:** <https://hub.docker.com/r/confluentinc/cp-kafka>
+- **Kafbat UI:** <https://github.com/kafbat/kafka-ui>
