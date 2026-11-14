@@ -26,7 +26,8 @@ Docker container management platform with web-based GUI for managing Docker envi
 
 | Variable | Default | Description |
 |----|---|----|
-| `PORTAINER_PORT` | `9000` | Port for web interface |
+| `PORTAINER_VERSION` | `latest` | Portainer CE Docker image tag |
+| `PORTAINER_PORT` | `9000` | Port for the plain-HTTP web interface |
 
 ### Usage Examples
 
@@ -45,6 +46,7 @@ PORTAINER_PORT=8000 docker compose up -d
 - Requires Docker socket access (security consideration)
 - Web interface only (no CLI included)
 - Limited container orchestration features compared to Kubernetes
+- No Docker health check: the image has no shell or HTTP client to run one
 
 ## Links & Resources
 

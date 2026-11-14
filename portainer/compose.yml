@@ -7,11 +7,7 @@ services:
     ports:
       - ${PORTAINER_PORT:-9000}:9000
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # No healthcheck: the image contains only the portainer binary (no shell, curl, or wget).
 
 volumes:
   portainer:
