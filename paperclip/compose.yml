@@ -1,0 +1,28 @@
+services:
+  paperclip:
+    image: ghcr.io/paperclipai/paperclip:${PAPERCLIP_VERSION:-latest}
+    restart: unless-stopped
+    # Published on localhost only: the UI gives access to agents that run shell commands
+    ports:
+      - 127.0.0.1:${PAPERCLIP_PORT:-3100}:3100
+    environment:
+      PAPERCLIP_PUBLIC_URL: http://localhost:${PAPERCLIP_PORT:-3100}
+      BETTER_AUTH_SECRET: ${PAPERCLIP_AUTH_SECRET:-paperclip-local-dev-auth-secret-0123456789}
+      PAPERCLIP_TOOL_ACTION_SIGNING_SECRET: ${PAPERCLIP_TOOL_ACTION_SECRET:-paperclip-local-dev-tool-secret-0123456789}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    volumes:
+      - paperclip_data:/paperclip
+    # Upstream limits: a backstop against leaked agent processes, and time for agents to settle on stop
+    pids_limit: 2048
+    stop_grace_period: 90s
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3100/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  paperclip_data:
