@@ -18,7 +18,7 @@ Self-hosted ChatGPT-style web interface for LLMs with advanced AI features.
 3. Configure LLM backend (requires Ollama or API connection)
 4. Create admin account (first user becomes admin)
 
-**Note:** Requires separate LLM backend service. Install [Ollama](https://ollama.ai) locally or configure API access.
+**Note:** Requires separate LLM backend service. Install [Ollama](https://ollama.com) locally or configure API access.
 
 ## Configuration
 
@@ -28,7 +28,7 @@ Self-hosted ChatGPT-style web interface for LLMs with advanced AI features.
 |----|---|----|
 | `OPEN_WEBUI_VERSION` | `main` | Docker image tag |
 | `OPEN_WEBUI_PORT` | `8080` | Web interface port |
-| `WEBUI_AUTH` | `False` | Enable authentication |
+| `OPEN_WEBUI_AUTH` | `False` | Enable authentication (sets `WEBUI_AUTH`) |
 
 ### Usage Examples
 
@@ -37,13 +37,13 @@ Self-hosted ChatGPT-style web interface for LLMs with advanced AI features.
 docker compose up -d
 
 # Enable authentication
-WEBUI_AUTH=True docker compose up -d
+OPEN_WEBUI_AUTH=True docker compose up -d
 
 # Custom port and version
-OPEN_WEBUI_VERSION=v0.3.0 OPEN_WEBUI_PORT=3000 docker compose up -d
+OPEN_WEBUI_VERSION=v0.13.3 OPEN_WEBUI_PORT=3000 docker compose up -d
 ```
 
-**Note:** Authentication disabled = all users have admin privileges. Enable for multi-user environments.
+**Note:** Authentication disabled = all users have admin privileges. Choose before the first start: authentication cannot be disabled once user accounts exist.
 
 ## Limitations
 
@@ -56,4 +56,4 @@ OPEN_WEBUI_VERSION=v0.3.0 OPEN_WEBUI_PORT=3000 docker compose up -d
 - **Official Website:** <https://openwebui.com>
 - **Official GitHub:** <https://github.com/open-webui/open-webui>
 - **Documentation:** <https://docs.openwebui.com>
-- **Docker Hub:** <https://hub.docker.com/r/ghcr.io/open-webui/open-webui>
+- **Container Image:** <https://github.com/open-webui/open-webui/pkgs/container/open-webui>
