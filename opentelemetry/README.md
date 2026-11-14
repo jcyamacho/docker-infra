@@ -1,15 +1,15 @@
 # OpenTelemetry
 
-Complete observability stack with OpenTelemetry collector, Grafana, Tempo, Mimir, and Loki in a single Docker image.
+Complete observability stack with OpenTelemetry Collector, Grafana, Prometheus, Tempo, Loki, and Pyroscope in a single Docker image.
 
 ## What it does
 
 - **Telemetry Ingestion** - Collects metrics, traces, and logs via OTLP HTTP/GRPC protocols
-- **Metrics Storage** - Long-term Prometheus-compatible metrics storage with Grafana Mimir
+- **Metrics Storage** - Prometheus with OTLP metrics ingestion
 - **Distributed Tracing** - High-volume tracing backend with Grafana Tempo
 - **Log Aggregation** - Centralized logging with Grafana Loki
+- **Continuous Profiling** - Profile storage and querying with Grafana Pyroscope
 - **Visualization Dashboard** - Pre-configured Grafana instance with integrated data sources
-- **Development Ready** - Built-in examples and traffic generation for testing
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ Complete observability stack with OpenTelemetry collector, Grafana, Tempo, Mimir
 3. Login with username `admin` and password `admin`
 4. Send telemetry data to OTLP endpoints (ports 4317/4318)
 
-**Note:** This is an all-in-one observability stack perfect for development and testing environments.
+**Note:** Telemetry and Grafana data are kept in the `otel` volume across restarts.
 
 ## Configuration
 
@@ -26,6 +26,7 @@ Complete observability stack with OpenTelemetry collector, Grafana, Tempo, Mimir
 
 | Variable | Default | Description |
 |----|---|----|
+| `GRAFANA_OTEL_VERSION` | `latest` | `grafana/otel-lgtm` Docker image tag |
 | `GRAFANA_PORT` | `3000` | Port for Grafana web interface |
 
 ### Usage Examples
@@ -36,6 +37,9 @@ docker compose up -d
 
 # Custom Grafana port
 GRAFANA_PORT=3001 docker compose up -d
+
+# Specific version
+GRAFANA_OTEL_VERSION=0.41.0 docker compose up -d
 
 # Send sample telemetry (requires application instrumentation)
 curl -X POST http://localhost:4318/v1/traces \
