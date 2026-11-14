@@ -55,6 +55,7 @@ PAPERCLIP_AUTH_SECRET=my-long-random-secret PAPERCLIP_TOOL_ACTION_SECRET=another
 ## Limitations
 
 - Requires an LLM provider API key (not included)
+- Claude agents on the default Paperclip Runner fail the environment test in the Docker image ([paperclipai/paperclip#18557](https://github.com/paperclipai/paperclip/issues/18557)); choose the legacy runner under **Advanced** when you create the agent
 - The default secrets are public development values; set your own before storing real credentials
 - Agents run their shell commands inside this container
 - Uses the embedded PostgreSQL database; an external database needs `DATABASE_URL`, which is not configured
