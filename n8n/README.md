@@ -6,7 +6,7 @@ n8n is a workflow automation platform that lets you connect services and automat
 
 - **Visual Workflow Builder** - Create automation workflows using drag-and-drop interface
 - **400+ Integrations** - Connect APIs, databases, and services with pre-built nodes
-- **Custom Code Support** - Execute JavaScript and Python code within workflows
+- **Custom Code Support** - Execute JavaScript code within workflows
 - **Webhook Triggers** - Start workflows from external HTTP requests and events
 - **Scheduled Execution** - Run workflows on cron schedules and time intervals
 - **Self-Hosted Control** - Full data ownership and custom deployment options
@@ -39,7 +39,7 @@ docker compose up -d
 N8N_PORT=8080 docker compose up -d
 
 # Specific version
-N8N_VERSION=1.19.4 docker compose up -d
+N8N_VERSION=2.47.7 docker compose up -d
 ```
 
 **Note:** Workflows and credentials are stored in the persistent volume.
@@ -47,6 +47,7 @@ N8N_VERSION=1.19.4 docker compose up -d
 ## Limitations
 
 - Single-instance setup (no clustering)
+- Python in the Code node needs the external `n8nio/runners` task runner, which is not included
 - External service credentials must be configured manually
 - Some integrations may require additional setup or API keys
 - Performance depends on workflow complexity and external service response times
