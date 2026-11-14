@@ -26,6 +26,7 @@ Document-oriented NoSQL database with Mongo Express web interface for database m
 
 | Variable | Default | Description |
 |----|---|----|
+| `MONGO_VERSION` | `latest` | MongoDB Docker image tag |
 | `MONGO_EXPRESS_PORT` | `8081` | Port for Mongo Express web interface |
 
 ### Usage Examples
@@ -37,8 +38,11 @@ docker compose up -d
 # Custom Mongo Express port
 MONGO_EXPRESS_PORT=8080 docker compose up -d
 
-# Connect with mongo shell
-mongo mongodb://localhost:27017/your-database-name
+# Specific MongoDB version
+MONGO_VERSION=8.0 docker compose up -d
+
+# Connect with mongosh
+mongosh mongodb://localhost:27017/your-database-name
 ```
 
 **Note:** Database files are persisted in Docker volumes across container restarts.
@@ -53,5 +57,5 @@ mongo mongodb://localhost:27017/your-database-name
 
 - **Official Website:** <https://www.mongodb.com>
 - **Official GitHub:** <https://github.com/mongodb/mongo>
-- **Documentation:** <https://docs.mongodb.com>
+- **Documentation:** <https://www.mongodb.com/docs/>
 - **Docker Hub:** <https://hub.docker.com/_/mongo>
