@@ -1,0 +1,30 @@
+services:
+  hermes-agent:
+    image: nousresearch/hermes-agent:${HERMES_VERSION:-latest}
+    command: ["gateway", "run"]
+    restart: unless-stopped
+    # Published on localhost only: both ports give access to an agent that runs shell commands
+    ports:
+      - 127.0.0.1:${HERMES_API_PORT:-8642}:8642
+      - 127.0.0.1:${HERMES_DASHBOARD_PORT:-9119}:9119
+    environment:
+      API_SERVER_ENABLED: "true"
+      API_SERVER_HOST: 0.0.0.0
+      API_SERVER_KEY: ${HERMES_API_KEY:-hermes-local-dev-key}
+      HERMES_DASHBOARD: "1"
+      # The dashboard refuses to bind to 0.0.0.0 without an auth provider
+      HERMES_DASHBOARD_BASIC_AUTH_USERNAME: ${HERMES_DASHBOARD_USER:-admin}
+      HERMES_DASHBOARD_BASIC_AUTH_PASSWORD: ${HERMES_DASHBOARD_PASSWORD:-hermes}
+    volumes:
+      - hermes_data:/opt/data
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8642/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  hermes_data:
