@@ -59,7 +59,7 @@ MYSQL_ROOT_PASSWORD=secret PHPMYADMIN_PORT=8080 make mysql
 ## Available Services
 
 **Databases:** postgres, mysql, mongo, redis
-**AI/ML:** open-webui, hermes-agent, paperclip
+**AI/ML:** open-webui, hermes-agent, paperclip, openclaw
 **Automation:** n8n
 **Infrastructure:** kafka, opentelemetry, portainer, adguard-home
 

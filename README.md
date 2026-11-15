@@ -25,7 +25,7 @@ make help
 ## 📦 Available Services
 
 **Databases:** `postgres` `mysql` `mongo` `redis`  
-**AI/ML:** `open-webui` `hermes-agent` `paperclip`  
+**AI/ML:** `open-webui` `hermes-agent` `paperclip` `openclaw`  
 **Automation:** `n8n`  
 **Infrastructure:** `kafka` `opentelemetry` `portainer` `adguard-home`
 

@@ -1,0 +1,45 @@
+services:
+  openclaw:
+    # The -browser variant bundles the Chromium that the agent's browser tool drives
+    image: ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION:-latest}-browser
+    # Pins the settings the gateway needs in Docker on every start, then hands off to the image
+    # entrypoint, which runs its doctor migration before the gateway. A failed write does not
+    # block startup, because the doctor may still have to migrate an older config.
+    command:
+      - sh
+      - -c
+      - |
+        openclaw config set --batch-json '[
+          {"path":"gateway.mode","value":"local"},
+          {"path":"gateway.bind","value":"lan"},
+          {"path":"gateway.controlUi.allowedOrigins","value":["http://localhost:${OPENCLAW_PORT:-18789}","http://127.0.0.1:${OPENCLAW_PORT:-18789}"]},
+          {"path":"browser.noSandbox","value":true}
+        ]'
+        exec node /app/docker-entrypoint.mjs node openclaw.mjs gateway --bind lan --port 18789
+    restart: unless-stopped
+    # Published on localhost only: the Control UI gives access to an agent that runs shell commands
+    ports:
+      - 127.0.0.1:${OPENCLAW_PORT:-18789}:18789
+    environment:
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-openclaw-local-dev-token}
+    volumes:
+      - openclaw_data:/home/node/.openclaw
+      # Upstream keeps the auth-profile encryption key apart from the state directory
+      - openclaw_secrets:/home/node/.config/openclaw
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "node", "dist/docker-healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  openclaw_data:
+  openclaw_secrets:
