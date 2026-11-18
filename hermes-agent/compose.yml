@@ -1,3 +1,25 @@
+x-honcho-env: &honcho-env
+  DB_CONNECTION_URI: postgresql+psycopg://postgres:postgres@honcho-db:5432/postgres
+  LLM_OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  DERIVER_MODEL_CONFIG__MODEL: gpt-6-luna
+  SUMMARY_MODEL_CONFIG__MODEL: gpt-6-luna
+  # The dialectic and dream agents call tools over Chat Completions, which
+  # gpt-6-luna allows only with reasoning effort "none"
+  DIALECTIC_LEVELS__minimal__MODEL_CONFIG__MODEL: gpt-6-luna
+  DIALECTIC_LEVELS__minimal__MODEL_CONFIG__THINKING_EFFORT: none
+  DIALECTIC_LEVELS__low__MODEL_CONFIG__MODEL: gpt-6-luna
+  DIALECTIC_LEVELS__low__MODEL_CONFIG__THINKING_EFFORT: none
+  DIALECTIC_LEVELS__medium__MODEL_CONFIG__MODEL: gpt-6-luna
+  DIALECTIC_LEVELS__medium__MODEL_CONFIG__THINKING_EFFORT: none
+  DIALECTIC_LEVELS__high__MODEL_CONFIG__MODEL: gpt-6-luna
+  DIALECTIC_LEVELS__high__MODEL_CONFIG__THINKING_EFFORT: none
+  DIALECTIC_LEVELS__max__MODEL_CONFIG__MODEL: gpt-6-luna
+  DIALECTIC_LEVELS__max__MODEL_CONFIG__THINKING_EFFORT: none
+  DREAM_DEDUCTION_MODEL_CONFIG__MODEL: gpt-6-luna
+  DREAM_DEDUCTION_MODEL_CONFIG__THINKING_EFFORT: none
+  DREAM_INDUCTION_MODEL_CONFIG__MODEL: gpt-6-luna
+  DREAM_INDUCTION_MODEL_CONFIG__THINKING_EFFORT: none
+
 services:
   hermes-agent:
     image: nousresearch/hermes-agent:${HERMES_VERSION:-latest}
@@ -15,6 +37,7 @@ services:
       # The dashboard refuses to bind to 0.0.0.0 without an auth provider
       HERMES_DASHBOARD_BASIC_AUTH_USERNAME: ${HERMES_DASHBOARD_USER:-admin}
       HERMES_DASHBOARD_BASIC_AUTH_PASSWORD: ${HERMES_DASHBOARD_PASSWORD:-hermes}
+      HONCHO_BASE_URL: http://honcho:8000
     volumes:
       - hermes_data:/opt/data
     extra_hosts:
@@ -25,6 +48,60 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    networks:
+      - hermes-agent
+
+  honcho:
+    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
+    # Runs the database migrations before starting the API
+    entrypoint: ["sh", "docker/entrypoint.sh"]
+    restart: unless-stopped
+    depends_on:
+      honcho-db:
+        condition: service_healthy
+    environment: *honcho-env
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - hermes-agent
+
+  # Background worker that derives memories from the messages Hermes sends;
+  # it has no endpoint to health-check
+  honcho-deriver:
+    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
+    entrypoint: ["/app/.venv/bin/python", "-m", "src.deriver"]
+    restart: unless-stopped
+    depends_on:
+      honcho:
+        condition: service_healthy
+    environment: *honcho-env
+    networks:
+      - hermes-agent
+
+  honcho-db:
+    image: pgvector/pgvector:pg15
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - honcho_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hermes-agent
 
 volumes:
   hermes_data:
+  honcho_db:
+
+networks:
+  hermes-agent:
+    name: hermes-agent
+    driver: bridge
