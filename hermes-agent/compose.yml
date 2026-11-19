@@ -1,34 +1,16 @@
-x-honcho-env: &honcho-env
-  DB_CONNECTION_URI: postgresql+psycopg://postgres:postgres@honcho-db:5432/postgres
-  LLM_OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-  DERIVER_MODEL_CONFIG__MODEL: gpt-6-luna
-  SUMMARY_MODEL_CONFIG__MODEL: gpt-6-luna
-  # The dialectic and dream agents call tools over Chat Completions, which
-  # gpt-6-luna allows only with reasoning effort "none"
-  DIALECTIC_LEVELS__minimal__MODEL_CONFIG__MODEL: gpt-6-luna
-  DIALECTIC_LEVELS__minimal__MODEL_CONFIG__THINKING_EFFORT: none
-  DIALECTIC_LEVELS__low__MODEL_CONFIG__MODEL: gpt-6-luna
-  DIALECTIC_LEVELS__low__MODEL_CONFIG__THINKING_EFFORT: none
-  DIALECTIC_LEVELS__medium__MODEL_CONFIG__MODEL: gpt-6-luna
-  DIALECTIC_LEVELS__medium__MODEL_CONFIG__THINKING_EFFORT: none
-  DIALECTIC_LEVELS__high__MODEL_CONFIG__MODEL: gpt-6-luna
-  DIALECTIC_LEVELS__high__MODEL_CONFIG__THINKING_EFFORT: none
-  DIALECTIC_LEVELS__max__MODEL_CONFIG__MODEL: gpt-6-luna
-  DIALECTIC_LEVELS__max__MODEL_CONFIG__THINKING_EFFORT: none
-  DREAM_DEDUCTION_MODEL_CONFIG__MODEL: gpt-6-luna
-  DREAM_DEDUCTION_MODEL_CONFIG__THINKING_EFFORT: none
-  DREAM_INDUCTION_MODEL_CONFIG__MODEL: gpt-6-luna
-  DREAM_INDUCTION_MODEL_CONFIG__THINKING_EFFORT: none
-
 services:
   hermes-agent:
-    image: nousresearch/hermes-agent:${HERMES_VERSION:-latest}
+    # The -desktop variant bundles TigerVNC, Xfce, and Chromium for Bot Screen
+    image: nousresearch/hermes-agent:${HERMES_VERSION:-latest}-desktop
     command: ["gateway", "run"]
     restart: unless-stopped
-    # Published on localhost only: both ports give access to an agent that runs shell commands
+    # Chromium on the Bot Screen crashes with Docker's default 64 MB /dev/shm
+    shm_size: 1gb
+    # Published on localhost only: these ports give access to an agent that runs shell commands
     ports:
       - 127.0.0.1:${HERMES_API_PORT:-8642}:8642
       - 127.0.0.1:${HERMES_DASHBOARD_PORT:-9119}:9119
+      - 127.0.0.1:${HERMES_WEBAPP_PORT:-9120}:9120
     environment:
       API_SERVER_ENABLED: "true"
       API_SERVER_HOST: 0.0.0.0
@@ -37,9 +19,9 @@ services:
       # The dashboard refuses to bind to 0.0.0.0 without an auth provider
       HERMES_DASHBOARD_BASIC_AUTH_USERNAME: ${HERMES_DASHBOARD_USER:-admin}
       HERMES_DASHBOARD_BASIC_AUTH_PASSWORD: ${HERMES_DASHBOARD_PASSWORD:-hermes}
-      HONCHO_BASE_URL: http://honcho:8000
     volumes:
       - hermes_data:/opt/data
+      - ./hindsight.json:/opt/data/hindsight/config.json:ro
     extra_hosts:
       - host.docker.internal:host-gateway
     healthcheck:
@@ -51,55 +33,43 @@ services:
     networks:
       - hermes-agent
 
-  honcho:
-    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
-    # Runs the database migrations before starting the API
-    entrypoint: ["sh", "docker/entrypoint.sh"]
+  hindsight:
+    image: ghcr.io/vectorize-io/hindsight:${HINDSIGHT_VERSION:-latest}
     restart: unless-stopped
-    depends_on:
-      honcho-db:
-        condition: service_healthy
-    environment: *honcho-env
+    # Hermes reaches the API at http://hindsight:8888; only the control plane UI is published
+    ports:
+      - 127.0.0.1:${HINDSIGHT_UI_PORT:-9999}:9999
+    environment:
+      HINDSIGHT_API_LLM_API_KEY: ${OPENAI_API_KEY:-}
+      HINDSIGHT_API_LLM_MODEL: gpt-6-luna
+      # Recall and consolidation run at low effort for speed; extraction runs in the
+      # background, so it keeps medium effort to avoid inventing facts
+      HINDSIGHT_API_LLM_REASONING_EFFORT: low
+      HINDSIGHT_API_RETAIN_LLM_REASONING_EFFORT: medium
+      # Added to the built-in extraction rules for every bank
+      HINDSIGHT_API_RETAIN_MISSION: >-
+        Keep only durable facts about the person: identity, preferences, projects,
+        decisions, people they mention, and commitments with dates. Do not store
+        requests, commands, or the steps of the conversation. Do not infer roles or
+        relationships that are not stated explicitly.
+    volumes:
+      - hindsight_data:/home/hindsight/.pg0
+    shm_size: 1gb
+    # Gives the embedded PostgreSQL time to shut down cleanly
+    stop_grace_period: 75s
     healthcheck:
-      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
-    networks:
-      - hermes-agent
-
-  # Background worker that derives memories from the messages Hermes sends;
-  # it has no endpoint to health-check
-  honcho-deriver:
-    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
-    entrypoint: ["/app/.venv/bin/python", "-m", "src.deriver"]
-    restart: unless-stopped
-    depends_on:
-      honcho:
-        condition: service_healthy
-    environment: *honcho-env
-    networks:
-      - hermes-agent
-
-  honcho-db:
-    image: pgvector/pgvector:pg15
-    restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - honcho_db:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      # The API loads its local embedding and reranker models before it reports healthy
+      start_period: 120s
     networks:
       - hermes-agent
 
 volumes:
   hermes_data:
-  honcho_db:
+  hindsight_data:
 
 networks:
   hermes-agent:

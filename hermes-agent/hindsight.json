@@ -1,0 +1,8 @@
+{
+  "mode": "local_external",
+  "api_url": "http://hindsight:8888",
+  "bank_id_template": "hermes-{user}",
+  "recall_max_tokens": 1024,
+  "recall_budget": "low",
+  "recall_min_scores": {"reranker": 0.3}
+}
