@@ -50,8 +50,10 @@ services:
       HINDSIGHT_API_RETAIN_MISSION: >-
         Keep only durable facts about the person: identity, preferences, projects,
         decisions, people they mention, and commitments with dates. Do not store
-        requests, commands, or the steps of the conversation. Do not infer roles or
-        relationships that are not stated explicitly.
+        requests, commands, or the steps of the conversation, nor what the assistant
+        did or explained, nor the agent's internal technical details. Do not infer
+        roles or relationships that are not stated explicitly. Do not duplicate facts
+        already known; when something changes, keep the new state.
     volumes:
       - hindsight_data:/home/hindsight/.pg0
     shm_size: 1gb
